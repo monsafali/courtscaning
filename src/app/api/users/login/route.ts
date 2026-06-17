@@ -42,12 +42,13 @@ export async function POST(request: NextRequest) {
       isAdmin: user.isAdmin,
     });
 
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      sameSite: "strict",
-      path: "/",
-      maxAge: 604800,
-    });
+  response.cookies.set("token", token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict",
+  path: "/",
+  maxAge: 60 * 60 * 24 * 7,
+});
 
     return response;
   } catch (error: any) {

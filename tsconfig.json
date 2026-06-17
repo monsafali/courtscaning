@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "src/helpers/mailer.js", "src/app/api/users/getme/route.ts", "src/helpers/cloudinary.js"  ],
+, "src/helpers/mailer.js", "src/app/api/users/getme/route.ts", "src/helpers/cloudinary.js", "src/proxy.ts", "src/app/profile/page.jsx"  ],
   "exclude": ["node_modules"]
 }
