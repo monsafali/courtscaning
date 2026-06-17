@@ -27,10 +27,12 @@ export default async function Page({ params }) {
     year: "numeric",
   });
 
-  const currentTime = new Date().toLocaleTimeString("en-PK", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+const currentTime = new Date().toLocaleTimeString("en-PK", {
+  timeZone: "Asia/Karachi",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true,
+});
 
   return (
     <div className="min-h-screen flex justify-center p-10 bg-gray-100">
