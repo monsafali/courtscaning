@@ -35,23 +35,24 @@ const currentTime = new Date().toLocaleTimeString("en-PK", {
 });
 
   return (
-    <div className="min-h-screen flex justify-center p-10 bg-gray-100">
+    <div className="min-h-screen flex justify-center p-10">
 
       {/* A4 Page */}
-      <div className="bg-white w-[800px] p-10 shadow-lg">
+      <div className=" w-[800px] p-10">
 
         {/* Header */}
         <div className="flex justify-between items-start border-b pb-4">
 
           {/* Logo */}
           <div>
-            <Image
+            {/* <Image
               src="/logo.png"
               alt="Logo"
               width={120}
               height={120}
               priority
-            />
+            /> */}
+
           </div>
 
           {/* QR */}
@@ -59,8 +60,8 @@ const currentTime = new Date().toLocaleTimeString("en-PK", {
             <Image
               src={qr}
               alt="QR Code"
-              width={120}
-              height={120}
+              width={110}
+              height={110}
               unoptimized
             />
             <p className="text-xs mt-1">
@@ -85,27 +86,27 @@ const currentTime = new Date().toLocaleTimeString("en-PK", {
           </p>
 
           <p className="text-sm mt-2">
-            ID: {data._id.toString()}
+            ID: {data._id.toString().toUpperCase()}
           </p>
         </div>
 
         {/* Parties */}
-        <div className="flex justify-between gap-10 mt-10">
+        <div className="flex justify-between gap-2 mt-10">
 
           {/* First Party */}
-          <div className="flex-1 border rounded p-4">
+          <div className="flex-1   ">
 
-            <h2 className="font-bold text-lg mb-4 text-center">
+            <h2 className="font-bold text-lg mb-4 ">
               First Party
             </h2>
 
-            <div className="flex justify-center">
+            <div className="flex ">
               <Image
                 src={data.firstParty.image}
-                width={200}
-                height={200}
+                width={400}
+                height={400}
                 alt="First Party"
-                className="object-cover border"
+                className="object-cover "
               />
             </div>
 
@@ -122,17 +123,17 @@ const currentTime = new Date().toLocaleTimeString("en-PK", {
           </div>
 
           {/* Second Party */}
-          <div className="flex-1 border rounded p-4">
+          <div className="flex-1  ">
 
-            <h2 className="font-bold text-lg mb-4 text-center">
+            <h2 className="font-bold text-lg mb-4  ">
               Second Party
             </h2>
 
-            <div className="flex justify-center">
+            <div className="flex ">
               <Image
                 src={data.secondParty.image}
-                width={200}
-                height={200}
+                width={400}
+                height={400}
                 alt="Second Party"
                 className="object-cover border"
               />
@@ -159,5 +160,8 @@ const currentTime = new Date().toLocaleTimeString("en-PK", {
 
       </div>
     </div>
+
+
+
   );
 }

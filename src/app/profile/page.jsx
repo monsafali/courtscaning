@@ -22,18 +22,64 @@ export default function ProfilePage() {
   const [refresh, setRefresh] = useState(false);
   const [user, setUser] = useState(null);
 
+
   const [form, setForm] = useState({
-    firstParty: {
-      name: "",
-      cnic: "",
-      image: "",
-    },
-    secondParty: {
-      name: "",
-      cnic: "",
-      image: "",
-    },
+  firstParty: {
+    name: "",
+    cnic: "",
+    image: "",
+    latitude: "",
+    longitude: "",
+    address: "",
+  },
+  secondParty: {
+    name: "",
+    cnic: "",
+    image: "",
+    latitude: "",
+    longitude: "",
+    address: "",
+  },
+});
+
+
+const getLocation = () => {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error("Geolocation is not supported"));
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+
+          const data = await response.json();
+
+          resolve({
+            latitude,
+            longitude,
+            address: data.display_name || "Address not found",
+          });
+        } catch (error) {
+          reject(error);
+        }
+      },
+      (error) => reject(error),
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0,
+      }
+    );
   });
+};
 
   const getUser = async () => {
   try {
@@ -65,32 +111,95 @@ useEffect(() => {
 }, [refresh]);
 
   // 📸 OPEN CAMERA
-  const openCamera = async (type) => {
-    try {
-      setActiveType(type);
-      setCameraOpen(true);
+const openCamera = async (type) => {
+  try {
+    setActiveType(type);
+    setCameraOpen(true);
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
-      });
+    navigator.geolocation.getCurrentPosition(
+      () => {},
+      () => {}
+    );
 
-      videoRef.current.srcObject = stream;
-      videoRef.current.play();
-    } catch (error) {
-      toast.error("Camera access denied");
-    }
-  };
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "user" },
+    });
 
-  // 📸 CAPTURE IMAGE
-  const captureImage = () => {
+    videoRef.current.srcObject = stream;
+    videoRef.current.play();
+  } catch (error) {
+    toast.error("Camera access denied");
+  }
+};
+
+
+  const captureImage = async () => {
+  try {
     const video = videoRef.current;
     const canvas = canvasRef.current;
+
+    toast.loading("Getting location...", {
+      id: "location",
+    });
+
+    const gps = await getLocation();
+
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     const ctx = canvas.getContext("2d");
+
+    // Draw image
     ctx.drawImage(video, 0, 0);
+
+    const timestamp = new Date().toLocaleString();
+
+    // Background overlay
+    const overlayHeight = 140;
+
+    ctx.fillStyle = "rgba(0,0,0,0.75)";
+    ctx.fillRect(
+      0,
+      canvas.height - overlayHeight,
+      canvas.width,
+      overlayHeight
+    );
+
+    // Text styling
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "18px Arial";
+
+    const lines = [
+      `Address: ${gps.address}`,
+      `Latitude: ${gps.latitude}`,
+      `Longitude: ${gps.longitude}`,
+      `Time: ${timestamp}`,
+    ];
+
+    const maxWidth = canvas.width - 20;
+    let y = canvas.height - 100;
+
+    lines.forEach((line) => {
+      const words = line.split(" ");
+      let currentLine = "";
+
+      for (let i = 0; i < words.length; i++) {
+        const testLine = currentLine + words[i] + " ";
+        const width = ctx.measureText(testLine).width;
+
+        if (width > maxWidth) {
+          ctx.fillText(currentLine, 10, y);
+          currentLine = words[i] + " ";
+          y += 22;
+        } else {
+          currentLine = testLine;
+        }
+      }
+
+      ctx.fillText(currentLine, 10, y);
+      y += 22;
+    });
 
     const imageData = canvas.toDataURL("image/png");
 
@@ -99,11 +208,33 @@ useEffect(() => {
       [activeType]: {
         ...prev[activeType],
         image: imageData,
+        latitude: gps.latitude,
+        longitude: gps.longitude,
+        address: gps.address,
       },
     }));
 
+    toast.success("Photo captured with GPS location", {
+      id: "location",
+    });
+
     stopCamera();
-  };
+  } catch (error) {
+    console.error(error);
+
+    toast.error(
+      "Unable to get location. Please allow location access.",
+      {
+        id: "location",
+      }
+    );
+  }
+};
+
+
+
+
+
 
   // 🛑 STOP CAMERA
   const stopCamera = () => {
