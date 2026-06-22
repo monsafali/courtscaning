@@ -133,7 +133,108 @@ const openCamera = async (type) => {
 };
 
 
-  const captureImage = async () => {
+//   const captureImage = async () => {
+//   try {
+//     const video = videoRef.current;
+//     const canvas = canvasRef.current;
+
+//     toast.loading("Getting location...", {
+//       id: "location",
+//     });
+
+//     const gps = await getLocation();
+
+
+//     canvas.width = video.videoWidth;
+//     canvas.height = video.videoHeight;
+
+//     const ctx = canvas.getContext("2d");
+
+//     // Draw image
+//     ctx.drawImage(video, 0, 0);
+
+//     const timestamp = new Date().toLocaleString();
+
+//     // Background overlay
+//     const overlayHeight = 140;
+
+//     ctx.fillStyle = "rgba(0,0,0,0.75)";
+//     ctx.fillRect(
+//       0,
+//       canvas.height - overlayHeight,
+//       canvas.width,
+//       overlayHeight
+//     );
+
+//     // Text styling
+//     ctx.fillStyle = "#ffffff";
+//     ctx.font = "18px Arial";
+
+//     const lines = [
+//       `Address: ${gps.address}`,
+//       `Latitude: ${gps.latitude}`,
+//       `Longitude: ${gps.longitude}`,
+//       `Time: ${timestamp}`,
+//     ];
+
+//     const maxWidth = canvas.width - 20;
+//     let y = canvas.height - 100;
+
+//     lines.forEach((line) => {
+//       const words = line.split(" ");
+//       let currentLine = "";
+
+//       for (let i = 0; i < words.length; i++) {
+//         const testLine = currentLine + words[i] + " ";
+//         const width = ctx.measureText(testLine).width;
+
+//         if (width > maxWidth) {
+//           ctx.fillText(currentLine, 10, y);
+//           currentLine = words[i] + " ";
+//           y += 22;
+//         } else {
+//           currentLine = testLine;
+//         }
+//       }
+
+//       ctx.fillText(currentLine, 10, y);
+//       y += 22;
+//     });
+
+//     const imageData = canvas.toDataURL("image/png");
+
+//     setForm((prev) => ({
+//       ...prev,
+//       [activeType]: {
+//         ...prev[activeType],
+//         image: imageData,
+//         latitude: gps.latitude,
+//         longitude: gps.longitude,
+//         address: gps.address,
+//       },
+//     }));
+
+//     toast.success("Photo captured with GPS location", {
+//       id: "location",
+//     });
+
+//     stopCamera();
+//   } catch (error) {
+//     console.error(error);
+
+//     toast.error(
+//       "Unable to get location. Please allow location access.",
+//       {
+//         id: "location",
+//       }
+//     );
+//   }
+// };
+
+
+
+
+const captureImage = async () => {
   try {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -143,20 +244,35 @@ const openCamera = async (type) => {
     });
 
     const gps = await getLocation();
+          // Only city/town name
+    const shortAddress = gps.address
+      ? gps.address.split(",")[0].trim()
+      : "Unknown Location";
 
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    // Fixed image size
+    canvas.width = 200;
+    canvas.height = 300;
 
     const ctx = canvas.getContext("2d");
 
-    // Draw image
-    ctx.drawImage(video, 0, 0);
+    // Draw camera image into 200x300 canvas
+    ctx.drawImage(
+      video,
+      0,
+      0,
+      video.videoWidth,
+      video.videoHeight,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
 
     const timestamp = new Date().toLocaleString();
 
     // Background overlay
-    const overlayHeight = 140;
+    const overlayHeight = 90;
 
     ctx.fillStyle = "rgba(0,0,0,0.75)";
     ctx.fillRect(
@@ -168,17 +284,17 @@ const openCamera = async (type) => {
 
     // Text styling
     ctx.fillStyle = "#ffffff";
-    ctx.font = "18px Arial";
+    ctx.font = "14px Arial";
 
     const lines = [
-      `Address: ${gps.address}`,
-      `Latitude: ${gps.latitude}`,
-      `Longitude: ${gps.longitude}`,
+      `Address: ${shortAddress}`,
+      `Lat: ${gps.latitude}`,
+      `Long: ${gps.longitude}`,
       `Time: ${timestamp}`,
     ];
 
-    const maxWidth = canvas.width - 20;
-    let y = canvas.height - 100;
+    const maxWidth = canvas.width - 15;
+    let y = canvas.height - 70;
 
     lines.forEach((line) => {
       const words = line.split(" ");
@@ -203,6 +319,7 @@ const openCamera = async (type) => {
 
     const imageData = canvas.toDataURL("image/png");
 
+
     setForm((prev) => ({
       ...prev,
       [activeType]: {
@@ -210,7 +327,7 @@ const openCamera = async (type) => {
         image: imageData,
         latitude: gps.latitude,
         longitude: gps.longitude,
-        address: gps.address,
+        address: shortAddress,
       },
     }));
 
@@ -235,8 +352,6 @@ const openCamera = async (type) => {
 
 
 
-
-  // 🛑 STOP CAMERA
   const stopCamera = () => {
     const stream = videoRef.current?.srcObject;
 

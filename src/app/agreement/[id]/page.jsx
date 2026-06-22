@@ -91,22 +91,22 @@ const currentTime = new Date().toLocaleTimeString("en-PK", {
         </div>
 
         {/* Parties */}
-        <div className="flex justify-between gap-2 mt-10">
+        <div className="flex justify-around mt-10">
 
           {/* First Party */}
-          <div className="flex-1   ">
+          <div className="   ">
 
-            <h2 className="font-bold text-lg mb-4 ">
+            <h2 className="font-bold text-lg mb-2 ">
               First Party
             </h2>
 
             <div className="flex ">
               <Image
                 src={data.firstParty.image}
-                width={400}
-                height={400}
+                width={200}
+                height={300}
                 alt="First Party"
-                className="object-cover "
+                className="w-[200px] h-[300px] object-cover border rounded-2xl"
               />
             </div>
 
@@ -123,19 +123,19 @@ const currentTime = new Date().toLocaleTimeString("en-PK", {
           </div>
 
           {/* Second Party */}
-          <div className="flex-1  ">
+          <div className="  ">
 
-            <h2 className="font-bold text-lg mb-4  ">
+            <h2 className="font-bold text-lg mb-2  ">
               Second Party
             </h2>
 
             <div className="flex ">
               <Image
                 src={data.secondParty.image}
-                width={400}
-                height={400}
+                width={200}
+                height={300}
                 alt="Second Party"
-                className="object-cover border"
+                className="w-[200px] h-[300px] object-cover border rounded-2xl"
               />
             </div>
 
