@@ -45,13 +45,13 @@ const currentTime = new Date().toLocaleTimeString("en-PK", {
 
           {/* Logo */}
           <div>
-            {/* <Image
+             <Image
               src="/logo.png"
               alt="Logo"
               width={120}
               height={120}
               priority
-            /> */}
+            />
 
           </div>
 
