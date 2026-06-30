@@ -465,19 +465,27 @@ const captureImage = async () => {
       }
     />
 
+
+
+
     <input
-      placeholder="CNIC"
-      className="border p-2 w-full mb-3 rounded"
-      onChange={(e) =>
-        setForm({
-          ...form,
-          firstParty: {
-            ...form.firstParty,
-            cnic: e.target.value,
-          },
-        })
-      }
-    />
+  type="text"
+  placeholder="CNIC"
+  value={form.firstParty.cnic}
+  maxLength={13}
+  className="border p-2 w-full mb-3 rounded"
+  onChange={(e) => {
+    const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+
+    setForm({
+      ...form,
+      firstParty: {
+        ...form.firstParty,
+        cnic: value,
+      },
+    });
+  }}
+/>
 
     <button
       onClick={() => openCamera("firstParty")}
@@ -517,19 +525,26 @@ const captureImage = async () => {
       }
     />
 
+
+
     <input
-      placeholder="CNIC"
-      className="border p-2 w-full mb-3 rounded"
-      onChange={(e) =>
-        setForm({
-          ...form,
-          secondParty: {
-            ...form.secondParty,
-            cnic: e.target.value,
-          },
-        })
-      }
-    />
+  type="text"
+  placeholder="CNIC"
+  value={form.secondParty.cnic}
+  maxLength={13}
+  className="border p-2 w-full mb-3 rounded"
+  onChange={(e) => {
+    const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+
+    setForm({
+      ...form,
+      secondParty: {
+        ...form.secondParty,
+        cnic: value,
+      },
+    });
+  }}
+/>
 
     <button
       onClick={() => openCamera("secondParty")}
